@@ -18,6 +18,8 @@ public class StarGame extends ApplicationAdapter {
 		img = new Texture("wallpaper.jpg");
 		img.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 		TextureRegion region = new TextureRegion(img,0,0,1080,1920);
+
+
 	}
 
 	@Override
