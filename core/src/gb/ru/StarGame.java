@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
 
+import java.util.Vector;
+
 public class StarGame extends ApplicationAdapter {
 	SpriteBatch batch;
 	Texture img;
