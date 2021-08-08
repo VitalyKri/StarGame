@@ -1,0 +1,7 @@
+setHeightProportion можно было не искать высоту, а сразу ставить процент
+setHeightProportion(0.05f * scale);
+было public void setSpeed(float percent) {this.speed = (float) getWidth() * percent / 100;}
+стало public void setSpeed(float percent) {this.speed =percent / 100;}
+
+перенести изменения в отдельный метод, было в render наследника разделить render на 2 метода update и draw для разделения
+зоны ответственности

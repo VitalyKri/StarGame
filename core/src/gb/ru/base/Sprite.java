@@ -35,6 +35,10 @@ public class Sprite extends Rect {
         );
     }
 
+    public void update(float delta) {
+
+    }
+
     public void resize(Rect worldBounds) {
 
     }

@@ -2,6 +2,7 @@ package gb.ru.sprite;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
@@ -15,20 +16,24 @@ public class FriendShip extends Sprite {
 
     private Vector2 vDeraction, touch;
 
-    public FriendShip(Texture texture) {
-        super(new TextureRegion(texture));
+    public FriendShip(TextureAtlas atlas) {
+        super(new TextureRegion(atlas.findRegion("")));
         touch = new Vector2();
         vDeraction = new Vector2();
 
     }
 
     @Override
-    public void draw(SpriteBatch batch) {
+    public void update(float delta) {
         if (touch.dst(pos) > speed) {
             pos.add(vDeraction);
         } else {
             pos.set(touch);
         }
+    }
+
+    @Override
+    public void draw(SpriteBatch batch) {
         super.draw(batch);
     }
 
@@ -36,9 +41,7 @@ public class FriendShip extends Sprite {
     @Override
     public void resize(Rect worldBounds) {
 
-        setHeightProportion(worldBounds.getHeight() / 20);
-        pos.set(worldBounds.pos);
-        vDeraction.set(pos);
+        setHeightProportion(0.05f * scale);
 
     }
 
