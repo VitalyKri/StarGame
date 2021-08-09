@@ -63,8 +63,7 @@ public class MenuScreen extends BaseScreen {
         }
         exitButtom.resize(worldBounds);
         playButtom.resize(worldBounds);
-        //myShip.resize(worldBounds);
-        //myShip.setSpeed(5);
+
     }
 
     @Override
@@ -86,7 +85,7 @@ public class MenuScreen extends BaseScreen {
         for (Star star :stars) {
             star.update(delta);
         }
-        //myShip.update(delta);
+
 
     }
     public void draw(float delta) {
@@ -105,7 +104,7 @@ public class MenuScreen extends BaseScreen {
     public boolean touchDown(Vector2 touch, int pointer, int button) {
         exitButtom.touchDown(touch,pointer,button);
         playButtom.touchDown(touch,pointer,button);
-        //myShip.updateManeuver(touch);
+
         return false;
     }
 
