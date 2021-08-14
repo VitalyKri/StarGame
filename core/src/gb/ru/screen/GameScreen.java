@@ -1,11 +1,14 @@
 package gb.ru.screen;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 
 import gb.ru.base.BaseScreen;
+import gb.ru.base.Playlist;
 import gb.ru.math.Rect;
 import gb.ru.pool.BulletPool;
 import gb.ru.sprite.Background;
@@ -22,7 +25,7 @@ public class GameScreen extends BaseScreen {
     private FriendShip myShip;
     private BulletPool bulletPoll;
     private TextureAtlas atlas, atlasMenu;
-
+    private Playlist playlist;
     private Star[] stars;
 
     @Override
@@ -33,7 +36,8 @@ public class GameScreen extends BaseScreen {
         background = new Background(bg);
         bulletPoll = new BulletPool();
         myShip = new FriendShip(atlas, bulletPoll);
-
+        playlist = new Playlist("background3");
+        myShip.setBulletSound(playlist.getBulletSound());
         stars = new Star[STAR_COUTN];
 
         for (int i = 0; i < STAR_COUTN; i++) {
@@ -65,6 +69,7 @@ public class GameScreen extends BaseScreen {
         for (Star star : stars) {
             star.update(delta);
         }
+        playlist.update(delta);
         bulletPoll.updateActiveSprites(delta);
 
     }
@@ -90,6 +95,7 @@ public class GameScreen extends BaseScreen {
         bg.dispose();
         atlas.dispose();
         bulletPoll.dispose();
+        playlist.dispose();
     }
 
     @Override

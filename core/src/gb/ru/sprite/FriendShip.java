@@ -2,6 +2,7 @@ package gb.ru.sprite;
 
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -30,18 +31,22 @@ public class FriendShip extends Sprite {
 
     private BulletPool bulletPool;
     private TextureRegion bulletRegion;
-    private Vector2 bulletV;
+    private Vector2 bulletV,bulletPos;
     private float bulletHeight;
     private int bulletDamage;
+    private Sound bulletSound,laserSound;
+    private float reloadTimer,reloadInterval;
     public FriendShip(TextureAtlas atlas,BulletPool bulletPool) {
         super(new TextureRegion(atlas.findRegion("main_ship")), 1, 2, 2, 1);
         touch = new Vector2();
         vDeraction = new Vector2();
         this.bulletPool = bulletPool;
         bulletRegion = atlas.findRegion("bulletMainShip");
+        bulletPos = new Vector2();
         bulletV = new Vector2(0,0.5f);
         bulletHeight = 0.01f;
         bulletDamage = 1;
+        reloadInterval = 0.5f;
     }
 
     @Override
@@ -52,6 +57,22 @@ public class FriendShip extends Sprite {
         } else {
             pos.set(touch);
         }
+
+        reloadTimer +=delta;
+
+        if (reloadTimer> reloadInterval){
+            reloadTimer = 0;
+            shoot();
+        }
+
+    }
+
+    public void setBulletSound(Sound bulletSound) {
+        this.bulletSound = bulletSound;
+    }
+
+    public void setLaserSound(Sound laserSound) {
+        this.laserSound = laserSound;
     }
 
     @Override
@@ -68,18 +89,17 @@ public class FriendShip extends Sprite {
 
     public void checkAndHandelBounds() {
         if (getLeft() < worldBounds.getLeft()) {
-            pos.sub(vDeraction);
+            setLeft(worldBounds.getLeft());
         }
         if (getRight() > worldBounds.getRight()) {
-            pos.sub(vDeraction);
+            setRight(worldBounds.getRight());
         }
         if (getBottom() < worldBounds.getBottom()) {
-            pos.sub(vDeraction);
+            setBottom(worldBounds.getBottom());
         }
         if (getTop() > worldBounds.getTop()) {
-            pos.sub(vDeraction);
+            setTop(worldBounds.getTop());
         }
-
     }
 
     public void setSpeed(float percent) {
@@ -155,8 +175,11 @@ public class FriendShip extends Sprite {
         vDeraction.setLength(speed);
         this.touch.set(pos.cpy().add(vDeraction)).setLength(2);
     }
+
     private void shoot(){
         Bullet bullet = bulletPool.obtain();
+        bulletSound.play(0.1f);
+        bulletPos.set(pos.x, pos.y + getHalfHeight());
         bullet.set(this,bulletRegion,pos,bulletV,bulletHeight,worldBounds,bulletDamage);
 
     }
