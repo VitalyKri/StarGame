@@ -136,6 +136,7 @@ enum TypeShip {
                 worldBounds.getLeft() + enemyShip.getHalfWidth(),
                 worldBounds.getRight() - enemyShip.getHalfWidth());
         enemyShip.pos.x = x;
+
         enemyShip.setBottom(worldBounds.getTop());
 
     }

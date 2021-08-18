@@ -16,6 +16,7 @@ import java.util.LinkedHashMap;
 import gb.ru.base.Ship;
 import gb.ru.math.Rect;
 import gb.ru.pool.BulletPool;
+import gb.ru.pool.ExplosionPool;
 
 
 public class FriendShip extends Ship {
@@ -27,7 +28,7 @@ public class FriendShip extends Ship {
     private Iterator<Direction> iterator;
 
 
-    public FriendShip(TextureAtlas atlas, BulletPool bulletPool) {
+    public FriendShip(TextureAtlas atlas, BulletPool bulletPool, ExplosionPool explosionPool) {
         super(new TextureRegion(atlas.findRegion("main_ship")), 1, 2, 2, 1);
         touch = new Vector2();
         vDeraction = new Vector2();
@@ -36,8 +37,9 @@ public class FriendShip extends Ship {
         bulletHeight = 0.01f;
         bulletDamage = 1;
         collisionDamage = 5;
-        hp = 100;
+        hp = 10;
         reloadInterval = 0.25f;
+        this.explosionPool = explosionPool;
     }
 
     @Override
@@ -68,7 +70,7 @@ public class FriendShip extends Ship {
     }
 
     public void setSpeed(float percent) {
-        this.speed = (float) getWidth() * percent / 100;
+        this.speed = (float) percent / 100;
         vDeraction.setLength(this.speed);
     }
 
@@ -127,6 +129,17 @@ public class FriendShip extends Ship {
         return false;
     }
 
+    @Override
+    public boolean isBulletCollision(Bullet bullet){
+        // попадает в нижнюю половину корабля
+        return (
+                bullet.getRight()>getLeft()
+                        && bullet.getLeft()<getRight()
+                        && bullet.getTop()< getBottom()
+                        && bullet.getBottom()< pos.y
+        );
+    }
+
     public void deleteManeuver(Direction direction) {
         directions.remove(direction);
         iterator = directions.iterator();
@@ -137,4 +150,6 @@ public class FriendShip extends Ship {
         vDeraction.setLength(speed);
         this.touch.set(pos.cpy().add(vDeraction)).setLength(2);
     }
+
+
 }

@@ -6,9 +6,13 @@ import com.badlogic.gdx.math.Vector2;
 
 import gb.ru.math.Rect;
 import gb.ru.pool.BulletPool;
+import gb.ru.pool.ExplosionPool;
 import gb.ru.sprite.Bullet;
+import gb.ru.sprite.Explosion;
 
-public class Ship extends Sprite {
+public abstract class Ship extends Sprite {
+
+    private static final float DAMAGE_ANIMATE_INTERVAL = 0.1f;
 
     protected Vector2 v0;
     protected float speed;
@@ -17,11 +21,15 @@ public class Ship extends Sprite {
     protected BulletPool bulletPool;
     protected TextureRegion bulletRegion;
     protected Vector2 bulletV,bulletPos;
-    protected float bulletHeight,reloadTimer,reloadInterval;
+    protected float bulletHeight,reloadInterval;
     protected int bulletDamage;
     protected Sound bulletSound,laserSound;
     protected int hp;
     protected int collisionDamage;
+    protected ExplosionPool explosionPool;
+
+    protected float damageAnimateTimer,reloadTimer;
+
 
     public Ship() {
         super();
@@ -47,11 +55,13 @@ public class Ship extends Sprite {
         this.laserSound = laserSound;
     }
 
+    public abstract boolean isBulletCollision(Bullet bullet);
+
     @Override
     public void update(float delta) {
         super.update(delta);
-        if (touch.dst(pos) > speed) {
-            pos.add(vDeraction);
+        if (touch.dst(pos) > (speed*delta)) {
+            pos.mulAdd(vDeraction,delta);
         } else {
             pos.set(touch);
         }
@@ -69,6 +79,11 @@ public class Ship extends Sprite {
             shoot();
         }
 
+        damageAnimateTimer += delta;
+
+        if (damageAnimateTimer>= DAMAGE_ANIMATE_INTERVAL){
+            frame = 0;
+        }
     }
 
     public int getHp() {
@@ -108,5 +123,18 @@ public class Ship extends Sprite {
             hp = 0;
             destroy();
         }
+        frame = 1;
+        damageAnimateTimer = 0f;
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        boom();
+    }
+
+    public void boom(){
+        Explosion explosion = explosionPool.obtain();
+        explosion.set(pos,getHeight());
     }
 }

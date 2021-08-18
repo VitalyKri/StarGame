@@ -7,13 +7,15 @@ import com.badlogic.gdx.math.Vector2;
 import gb.ru.base.Ship;
 import gb.ru.math.Rect;
 import gb.ru.pool.BulletPool;
+import gb.ru.pool.ExplosionPool;
 
 public class EnemyShip extends Ship {
 
-    public EnemyShip(Rect worldBounds, BulletPool bulletPool) {
+    public EnemyShip(Rect worldBounds, BulletPool bulletPool, ExplosionPool explosionPool) {
         super();
         this.worldBounds = worldBounds;
         this.bulletPool = bulletPool;
+        this.explosionPool = explosionPool;
     }
 
     @Override
@@ -54,14 +56,20 @@ public class EnemyShip extends Ship {
         this.reloadInterval = reloadInterval;
         setHeightProportion(height);
         this.hp = hp;
-        this.speed = speed * getWidth() / 100;
+        this.speed = speed / 100;
         this.v0.set(v0).setLength(this.speed);
-        this.vDeraction.set(v0).setLength(-0.005f);
+        this.vDeraction.set(v0).setLength(this.speed*15);
         this.touch = new Vector2(0, -4f);
         this.collisionDamage = collisionDamage;
-
     }
 
+    @Override
+    public void destroy() {
+        super.destroy();
+        reloadTimer = 0f;
+    }
+
+    @Override
     public boolean isBulletCollision(Bullet bullet){
         // попадает в верхную половину корабля
         return (
