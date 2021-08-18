@@ -11,10 +11,12 @@ import gb.ru.base.BaseScreen;
 import gb.ru.base.Playlist;
 import gb.ru.math.Rect;
 import gb.ru.pool.BulletPool;
+import gb.ru.pool.EnemyPool;
 import gb.ru.sprite.Background;
 import gb.ru.sprite.Direction;
 import gb.ru.sprite.FriendShip;
 import gb.ru.sprite.Star;
+import gb.ru.utils.EnemyEmitter;
 
 public class GameScreen extends BaseScreen {
 
@@ -23,10 +25,15 @@ public class GameScreen extends BaseScreen {
     private Texture bg;
     private Background background;
     private FriendShip myShip;
-    private BulletPool bulletPoll;
     private TextureAtlas atlas, atlasMenu;
-    private Playlist playlist;
     private Star[] stars;
+
+    private BulletPool bulletPoll;
+    private EnemyPool enemyPool;
+
+    private Playlist playlist;
+
+    private EnemyEmitter enemyEmitter;
 
     @Override
     public void show() {
@@ -35,14 +42,23 @@ public class GameScreen extends BaseScreen {
         atlas = new TextureAtlas("textures/mainAtlas.tpack");
         background = new Background(bg);
         bulletPoll = new BulletPool();
+        enemyPool = new EnemyPool(worldBounds,bulletPoll);
         myShip = new FriendShip(atlas, bulletPoll);
         playlist = new Playlist("background3");
-        myShip.setBulletSound(playlist.getBulletSound());
+        myShip.setBulletSound(playlist.getLaserSound());
         stars = new Star[STAR_COUTN];
 
         for (int i = 0; i < STAR_COUTN; i++) {
             stars[i] = new Star(atlas);
         }
+
+        enemyEmitter= new EnemyEmitter(
+                worldBounds,
+                playlist.getBulletSound(),
+                enemyPool,
+                atlas
+        );
+
     }
 
     @Override
@@ -71,11 +87,13 @@ public class GameScreen extends BaseScreen {
         }
         playlist.update(delta);
         bulletPoll.updateActiveSprites(delta);
-
+        enemyPool.updateActiveSprites(delta);
+        enemyEmitter.generate(delta);
     }
 
     public void freeAllDestroyed() {
         bulletPoll.freeAllDestroyedActiveSprites();
+        enemyPool.freeAllDestroyedActiveSprites();
     }
 
     public void draw() {
@@ -85,6 +103,7 @@ public class GameScreen extends BaseScreen {
             star.draw(batch);
         }
         bulletPoll.drawActiveSprites(batch);
+        enemyPool.drawActiveSprites(batch);
         myShip.draw(batch);
         batch.end();
     }
@@ -96,6 +115,7 @@ public class GameScreen extends BaseScreen {
         atlas.dispose();
         bulletPoll.dispose();
         playlist.dispose();
+        enemyPool.dispose();
     }
 
     @Override

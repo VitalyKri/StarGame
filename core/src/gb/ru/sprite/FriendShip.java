@@ -13,66 +13,47 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
-import gb.ru.base.Sprite;
+import gb.ru.base.Ship;
 import gb.ru.math.Rect;
 import gb.ru.pool.BulletPool;
 
 
-public class FriendShip extends Sprite {
+public class FriendShip extends Ship {
 
 
     // измеряется в процентах от размера корабля
-    private float speed;
     private HashSet<Direction> directions = new HashSet<>();
     private LinkedHashMap<Integer, Vector2> touchDeration = new LinkedHashMap<>();
     private Iterator<Direction> iterator;
-    private Vector2 vDeraction, touch;
-    private Rect worldBounds;
 
-    private BulletPool bulletPool;
-    private TextureRegion bulletRegion;
-    private Vector2 bulletV,bulletPos;
-    private float bulletHeight;
-    private int bulletDamage;
-    private Sound bulletSound,laserSound;
-    private float reloadTimer,reloadInterval;
-    public FriendShip(TextureAtlas atlas,BulletPool bulletPool) {
+
+    public FriendShip(TextureAtlas atlas, BulletPool bulletPool) {
         super(new TextureRegion(atlas.findRegion("main_ship")), 1, 2, 2, 1);
         touch = new Vector2();
         vDeraction = new Vector2();
         this.bulletPool = bulletPool;
         bulletRegion = atlas.findRegion("bulletMainShip");
-        bulletPos = new Vector2();
-        bulletV = new Vector2(0,0.5f);
         bulletHeight = 0.01f;
         bulletDamage = 1;
-        reloadInterval = 0.5f;
+        collisionDamage = 5;
+        hp = 100;
+        reloadInterval = 0.25f;
     }
 
     @Override
     public void update(float delta) {
-        if (touch.dst(pos) > speed) {
-            pos.add(vDeraction);
-            checkAndHandelBounds();
-        } else {
-            pos.set(touch);
-        }
-
-        reloadTimer +=delta;
-
-        if (reloadTimer> reloadInterval){
-            reloadTimer = 0;
-            shoot();
-        }
-
+        super.update(delta);
+        bulletPos.set(pos.x, pos.y + getHalfHeight());
+        checkAndHandelBounds();
     }
 
-    public void setBulletSound(Sound bulletSound) {
-        this.bulletSound = bulletSound;
-    }
-
-    public void setLaserSound(Sound laserSound) {
-        this.laserSound = laserSound;
+    public void checkAndHandelBounds() {
+        if (getBottom() < worldBounds.getBottom()) {
+            setBottom(worldBounds.getBottom());
+        }
+        if (getTop() > worldBounds.getTop()) {
+            setTop(worldBounds.getTop());
+        }
     }
 
     @Override
@@ -84,22 +65,6 @@ public class FriendShip extends Sprite {
     public void resize(Rect worldBounds) {
         this.worldBounds = worldBounds;
         setHeightProportion(0.07f);
-
-    }
-
-    public void checkAndHandelBounds() {
-        if (getLeft() < worldBounds.getLeft()) {
-            setLeft(worldBounds.getLeft());
-        }
-        if (getRight() > worldBounds.getRight()) {
-            setRight(worldBounds.getRight());
-        }
-        if (getBottom() < worldBounds.getBottom()) {
-            setBottom(worldBounds.getBottom());
-        }
-        if (getTop() > worldBounds.getTop()) {
-            setTop(worldBounds.getTop());
-        }
     }
 
     public void setSpeed(float percent) {
@@ -113,12 +78,12 @@ public class FriendShip extends Sprite {
             this.touch.set(pos.x, pos.y);
             vDeraction.set(this.touch.cpy().sub(pos)).setLength(speed);
         } else {
-            for (Integer key: touchDeration.keySet()
+            for (Integer key : touchDeration.keySet()
             ) {
                 // т.к. в touchDown всегда работает с 1 ссылкой, пришлось в первый элемент мапы записывать свой вектор,
                 // и если первая кнопка отжимается, всегда управление переходит к самому первому.
                 this.touch.set(touchDeration.get(key));
-                touchDeration.put(key,this.touch);
+                touchDeration.put(key, this.touch);
                 vDeraction.set(this.touch.cpy().sub(pos)).setLength(speed);
                 break;
             }
@@ -129,19 +94,16 @@ public class FriendShip extends Sprite {
         touchDeration.remove(pointer);
         updateManeuver();
     }
-    public void addManeuver(int pointer,Vector2 vector) {
-        touchDeration.put(pointer,vector);
+
+    public void addManeuver(int pointer, Vector2 vector) {
+        touchDeration.put(pointer, vector);
         updateManeuver();
     }
-
 
     public boolean keyDown(int keycode) {
         Direction direction = Direction.directionOnKeycode(keycode);
         if (direction != Direction.NOTDIRECTION) {
             updateManeuver(direction);
-        }
-        if (keycode == Input.Keys.E){
-            shoot();
         }
         return false;
     }
@@ -174,13 +136,5 @@ public class FriendShip extends Sprite {
         }
         vDeraction.setLength(speed);
         this.touch.set(pos.cpy().add(vDeraction)).setLength(2);
-    }
-
-    private void shoot(){
-        Bullet bullet = bulletPool.obtain();
-        bulletSound.play(0.1f);
-        bulletPos.set(pos.x, pos.y + getHalfHeight());
-        bullet.set(this,bulletRegion,pos,bulletV,bulletHeight,worldBounds,bulletDamage);
-
     }
 }

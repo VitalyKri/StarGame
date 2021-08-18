@@ -25,10 +25,23 @@ public class Playlist {
         this.mainMusic.play();
         this.newMusic = this.mainMusic;
         this.bulletSound = Gdx.audio.newSound(Gdx.files.internal("sounds/bullet.wav"));
-        //this.laserSound = Gdx.audio.newSound(Gdx.files.internal("sounds/laser.wav"));
-        //this.explosionSound = Gdx.audio.newSound(Gdx.files.internal("sounds/explosion.wav"));
+        this.laserSound = Gdx.audio.newSound(Gdx.files.internal("sounds/laser.wav"));
+        this.explosionSound = Gdx.audio.newSound(Gdx.files.internal("sounds/explosion.wav"));
 
     }
+
+    public Sound getExplosionSound() {
+        return explosionSound;
+    }
+
+    public void setExplosionSound(Sound explosionSound) {
+        this.explosionSound = explosionSound;
+    }
+
+    public Sound getLaserSound() {
+        return laserSound;
+    }
+
     public Sound getBulletSound() {
         return bulletSound;
     }
