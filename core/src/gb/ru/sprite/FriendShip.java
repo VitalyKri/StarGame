@@ -35,8 +35,9 @@ public class FriendShip extends Ship {
         bulletRegion = atlas.findRegion("bulletMainShip");
         bulletHeight = 0.01f;
         bulletDamage = 1;
+        collisionDamage = 5;
         hp = 100;
-        reloadInterval = 0.5f;
+        reloadInterval = 0.25f;
     }
 
     @Override

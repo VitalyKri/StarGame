@@ -74,13 +74,13 @@ public class EnemyEmitter {
 enum TypeShip {
     SMALL(0.1f, 0.01f,
             1, 3f,
-            1, new Vector2(0f, -0.02f), new Vector2(0, -0.3f),3f),
+            1, new Vector2(0f, -0.02f), new Vector2(0, -0.3f),3f,1),
     MEDIUM(0.15f, 0.02f,
             5, 4f,
-            5, new Vector2(0f, -0.03f), new Vector2(0, -0.25f),1.5f),
-    BIG(0.2f, 0.04f,
+            5, new Vector2(0f, -0.03f), new Vector2(0, -0.25f),1.5f,2),
+    BIG(0.2f, 0.03f,
             10, 1f,
-            10, new Vector2(0f, -0.005f), new Vector2(0, -0.15f),0.5f);
+            10, new Vector2(0f, -0.005f), new Vector2(0, -0.15f),0.5f,3);
 
     private final float ENEMY_HEIGHT;
     private final float ENEMY_BULLET_HEIGHT;
@@ -90,6 +90,7 @@ enum TypeShip {
     private final Vector2 enemyV;
     private final Vector2 enemyBulletVY;
     private final float speed;
+    private final int collisionDamage;
 
     TypeShip(float ENEMY_HEIGHT,
              float ENEMY_BULLET_HEIGHT,
@@ -98,7 +99,8 @@ enum TypeShip {
              int ENEMY_HP,
              Vector2 enemyV,
              Vector2 enemyBulletVY,
-             float speed) {
+             float speed,
+             int collisionDamage) {
         this.ENEMY_HEIGHT = ENEMY_HEIGHT;
         this.ENEMY_BULLET_HEIGHT = ENEMY_BULLET_HEIGHT;
         this.ENEMY_BULLET_DAMAGE = ENEMY_BULLET_DAMAG;
@@ -107,6 +109,7 @@ enum TypeShip {
         this.enemyV = enemyV;
         this.enemyBulletVY = enemyBulletVY;
         this.speed = speed;
+        this.collisionDamage = collisionDamage;
     }
 
     public void createRandomShip(EnemyPool enemyPool,
@@ -126,7 +129,8 @@ enum TypeShip {
                 this.ENEMYL_RELOAD_INTERVAL,
                 this.ENEMY_HEIGHT,
                 this.ENEMY_HP,
-                this.speed
+                this.speed,
+                this.collisionDamage
         );
         float x = Rnd.nextFloat(
                 worldBounds.getLeft() + enemyShip.getHalfWidth(),
