@@ -100,6 +100,10 @@ public class Rect {
         return getLeft() > other.getRight() || getRight() < other.getLeft() || getBottom() > other.getTop() || getTop() < other.getBottom();
     }
 
+    public boolean isInsideDst(Rect other) {
+       return pos.dst(other.pos)<(other.halfHeight+other.halfWidth);
+    }
+
     @Override
     public String toString() {
         return "Rectangle: pos" + pos + " size(" + getWidth() + ", " + getHeight() + ")";

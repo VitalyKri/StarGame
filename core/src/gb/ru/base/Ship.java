@@ -21,6 +21,7 @@ public class Ship extends Sprite {
     protected int bulletDamage;
     protected Sound bulletSound,laserSound;
     protected int hp;
+    protected int collisionDamage;
 
     public Ship() {
         super();
@@ -70,12 +71,42 @@ public class Ship extends Sprite {
 
     }
 
+    public int getHp() {
+        return hp;
+    }
 
+    public void setHp(int hp) {
+        this.hp = hp;
+    }
+
+    public int getBulletDamage() {
+        return bulletDamage;
+    }
+
+    public void setBulletDamage(int bulletDamage) {
+        this.bulletDamage = bulletDamage;
+    }
+
+    public int getCollisionDamage() {
+        return collisionDamage;
+    }
+
+    public void setCollisionDamage(int collisionDamage) {
+        this.collisionDamage = collisionDamage;
+    }
 
     private void shoot(){
         Bullet bullet = bulletPool.obtain();
         bulletSound.play(0.1f);
         bullet.set(this,bulletRegion,pos,bulletV,bulletHeight,worldBounds,bulletDamage);
 
+    }
+
+    public void damage(int damage){
+        this.hp -= damage;
+        if (hp <= 0){
+            hp = 0;
+            destroy();
+        }
     }
 }

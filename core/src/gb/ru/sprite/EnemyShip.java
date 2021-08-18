@@ -28,6 +28,8 @@ public class EnemyShip extends Ship {
 
     }
 
+
+
     public void set(
             TextureRegion[] regions,
             Vector2 v0,
@@ -39,7 +41,8 @@ public class EnemyShip extends Ship {
             float reloadInterval,
             float height,
             int hp,
-            float speed
+            float speed,
+            int collisionDamage
     ) {
         this.regions = regions;
         this.v0.set(v0);
@@ -55,8 +58,18 @@ public class EnemyShip extends Ship {
         this.v0.set(v0).setLength(this.speed);
         this.vDeraction.set(v0).setLength(-0.005f);
         this.touch = new Vector2(0, -4f);
+        this.collisionDamage = collisionDamage;
 
     }
 
+    public boolean isBulletCollision(Bullet bullet){
+        // попадает в верхную половину корабля
+        return (
+                bullet.getRight()>getLeft()
+                && bullet.getLeft()<getRight()
+                && bullet.getBottom()< getTop()
+                && bullet.getTop()> pos.y
+                );
+    }
 
 }

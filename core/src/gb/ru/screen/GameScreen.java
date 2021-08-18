@@ -7,13 +7,18 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 
+import java.util.List;
+
 import gb.ru.base.BaseScreen;
 import gb.ru.base.Playlist;
+import gb.ru.base.Sprite;
 import gb.ru.math.Rect;
 import gb.ru.pool.BulletPool;
 import gb.ru.pool.EnemyPool;
 import gb.ru.sprite.Background;
+import gb.ru.sprite.Bullet;
 import gb.ru.sprite.Direction;
+import gb.ru.sprite.EnemyShip;
 import gb.ru.sprite.FriendShip;
 import gb.ru.sprite.Star;
 import gb.ru.utils.EnemyEmitter;
@@ -86,6 +91,7 @@ public class GameScreen extends BaseScreen {
             star.update(delta);
         }
         playlist.update(delta);
+        checkСollision();
         bulletPoll.updateActiveSprites(delta);
         enemyPool.updateActiveSprites(delta);
         enemyEmitter.generate(delta);
@@ -147,6 +153,43 @@ public class GameScreen extends BaseScreen {
         myShip.addManeuver(pointer, touch);
         return false;
     }
+
+    public void checkСollision(){
+
+        List<Bullet> bulletList =  bulletPoll.getActiveSprites();
+        for (EnemyShip  enemyShip : enemyPool.getActiveSprites()
+        ) {
+            if (enemyShip.isDestroyed()){
+                continue;
+            }
+
+            if(enemyShip.isInsideDst(myShip)){
+                enemyShip.damage(myShip.getCollisionDamage());
+                if (enemyShip.getHp() <0){
+                    playlist.getExplosionSound().play(0.1f);
+                }
+
+            }
+            for ( Bullet  bullet :  bulletList
+            ) {
+                if (bullet.isDestroyed() || bullet.getOwner() != myShip){
+                    continue;
+                }
+                if(enemyShip.isBulletCollision(bullet)){
+                    bullet.destroy();
+                    enemyShip.damage(myShip.getBulletDamage());
+                    if (enemyShip.getHp() <=0){
+                        playlist.getExplosionSound().play(0.1f);
+                    }
+
+                }
+            }
+
+
+
+        }
+    }
+
 
 
 }
