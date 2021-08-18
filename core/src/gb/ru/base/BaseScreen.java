@@ -22,7 +22,7 @@ public class BaseScreen implements Screen, InputProcessor {
     // wpx*hpx
     private Rect screenBounds;
     // 1*aspect
-    private Rect worldBounds;
+    protected Rect worldBounds;
     // 2х2*aspect
     private Rect glBounds;
 
