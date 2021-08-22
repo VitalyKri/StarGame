@@ -21,6 +21,7 @@ import gb.ru.pool.ExplosionPool;
 
 public class FriendShip extends Ship {
 
+    private static final int HP = 1;
 
     // измеряется в процентах от размера корабля
     private HashSet<Direction> directions = new HashSet<>();
@@ -37,7 +38,7 @@ public class FriendShip extends Ship {
         bulletHeight = 0.01f;
         bulletDamage = 1;
         collisionDamage = 5;
-        hp = 10;
+        hp = HP;
         reloadInterval = 0.25f;
         this.explosionPool = explosionPool;
     }
@@ -151,5 +152,14 @@ public class FriendShip extends Ship {
         this.touch.set(pos.cpy().add(vDeraction)).setLength(2);
     }
 
+    public void startNewGame(){
+        hp = HP;
+        this.pos.x = worldBounds.pos.x;
+        directions.clear();
+        touchDeration.clear();
+        touch.set(0,0);
+        vDeraction.set(0,0);
+        flushDestroy();
+    }
 
 }
