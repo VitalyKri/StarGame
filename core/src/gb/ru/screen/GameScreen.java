@@ -21,6 +21,8 @@ import gb.ru.sprite.Bullet;
 import gb.ru.sprite.Direction;
 import gb.ru.sprite.EnemyShip;
 import gb.ru.sprite.FriendShip;
+import gb.ru.sprite.GameOver;
+import gb.ru.sprite.NewGameButtom;
 import gb.ru.sprite.Star;
 import gb.ru.utils.EnemyEmitter;
 
@@ -42,6 +44,8 @@ public class GameScreen extends BaseScreen {
 
     private EnemyEmitter enemyEmitter;
 
+    private GameOver gameOver;
+    private NewGameButtom newGameButtom;
     @Override
     public void show() {
         super.show();
@@ -68,6 +72,15 @@ public class GameScreen extends BaseScreen {
                 atlas
         );
 
+        gameOver = new GameOver(atlas);
+        newGameButtom = new NewGameButtom(atlas,this);
+    }
+
+    public void startNewGame(){
+        bulletPoll.freeAllActiveSprites();
+        enemyPool.freeAllActiveSprites();
+        explosionPool.freeAllActiveSprites();
+        myShip.startNewGame();
     }
 
     @Override
@@ -88,6 +101,8 @@ public class GameScreen extends BaseScreen {
         }
         myShip.resize(worldBounds);
         myShip.setSpeed(20);
+        gameOver.resize(worldBounds);
+        newGameButtom.resize(worldBounds);
     }
 
     public void update(float delta) {
@@ -99,7 +114,6 @@ public class GameScreen extends BaseScreen {
             myShip.update(delta);
             bulletPoll.updateActiveSprites(delta);
             enemyPool.updateActiveSprites(delta);
-
         }
         explosionPool.updateActiveSprites(delta);
         playlist.update(delta);
@@ -122,6 +136,9 @@ public class GameScreen extends BaseScreen {
             myShip.draw(batch);
             bulletPoll.drawActiveSprites(batch);
             enemyPool.drawActiveSprites(batch);
+        } else {
+            gameOver.draw(batch);
+            newGameButtom.draw(batch);
         }
         explosionPool.drawActiveSprites(batch);
         batch.end();
@@ -152,13 +169,22 @@ public class GameScreen extends BaseScreen {
 
     @Override
     public boolean touchDown(Vector2 touch, int pointer, int button) {
-        myShip.addManeuver(pointer, touch);
+        if (myShip.isDestroyed()){
+            newGameButtom.touchDown(touch, pointer, button);
+        } else {
+            myShip.addManeuver(pointer, touch);
+        }
+
         return false;
     }
 
     @Override
     public boolean touchUp(Vector2 touch, int pointer, int button) {
-        myShip.deleteManeuver(pointer);
+        if (myShip.isDestroyed()){
+            newGameButtom.touchUp(touch, pointer, button);
+        } else {
+            myShip.deleteManeuver(pointer);
+        }
         return false;
     }
 
