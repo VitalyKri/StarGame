@@ -25,7 +25,7 @@ public class EnemyEmitter {
 
 
     private float generateTimer;
-    private int level;
+    private int level = 1;
 
     public EnemyEmitter(Rect worldBounds, Sound bulletSound, EnemyPool enemyPool, TextureAtlas atlas) {
         this.worldBounds = worldBounds;
@@ -37,8 +37,8 @@ public class EnemyEmitter {
         this.enemyBigRegions = Regions.split(atlas.findRegion("enemy2"), 1, 2, 2);
     }
 
-    public void generate(float detla, int frags) {
-        level = frags / 10 + 1;
+    public boolean generateUpdateLevel(float detla, int frags) {
+
         generateTimer += detla;
         if (generateTimer >= GENERATE_INTERVAL) {
             generateTimer = 0f;
@@ -73,6 +73,12 @@ public class EnemyEmitter {
             }
 
         }
+        boolean newLevel = false;
+        if (this.level != frags / 10 + 1){
+            level = frags / 10 + 1;
+            newLevel = true;
+        }
+        return newLevel;
     }
 
     public int getLevel() {
