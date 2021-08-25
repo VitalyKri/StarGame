@@ -25,6 +25,7 @@ public class EnemyEmitter {
 
 
     private float generateTimer;
+    private int level;
 
     public EnemyEmitter(Rect worldBounds, Sound bulletSound, EnemyPool enemyPool, TextureAtlas atlas) {
         this.worldBounds = worldBounds;
@@ -36,7 +37,8 @@ public class EnemyEmitter {
         this.enemyBigRegions = Regions.split(atlas.findRegion("enemy2"), 1, 2, 2);
     }
 
-    public void generate(float detla) {
+    public void generate(float detla, int frags) {
+        level = frags / 10 + 1;
         generateTimer += detla;
         if (generateTimer >= GENERATE_INTERVAL) {
             generateTimer = 0f;
@@ -47,7 +49,8 @@ public class EnemyEmitter {
                         this.bulletSound,
                         this.bulletRegion,
                         this.enemySmallRegions,
-                        this.worldBounds
+                        this.worldBounds,
+                        this.level
                 );
             } else if (type <= 90) {
                 TypeShip.MEDIUM.createRandomShip(
@@ -55,7 +58,8 @@ public class EnemyEmitter {
                         this.bulletSound,
                         this.bulletRegion,
                         this.enemyMediumRegions,
-                        this.worldBounds
+                        this.worldBounds,
+                        this.level
                 );
             } else {
                 TypeShip.BIG.createRandomShip(
@@ -63,11 +67,16 @@ public class EnemyEmitter {
                         this.bulletSound,
                         this.bulletRegion,
                         this.enemyBigRegions,
-                        this.worldBounds
+                        this.worldBounds,
+                        this.level
                 );
             }
 
         }
+    }
+
+    public int getLevel() {
+        return level;
     }
 }
 
@@ -116,7 +125,7 @@ enum TypeShip {
                                  Sound bulletSound,
                                  TextureRegion bulletRegion,
                                  TextureRegion[] enemyRegions,
-                                 Rect worldBounds) {
+                                 Rect worldBounds, int level) {
         EnemyShip enemyShip = enemyPool.obtain();
         enemyShip.set(
                 enemyRegions,
@@ -124,7 +133,7 @@ enum TypeShip {
                 bulletRegion,
                 this.enemyBulletVY,
                 this.ENEMY_BULLET_HEIGHT,
-                this.ENEMY_BULLET_DAMAGE,
+                this.ENEMY_BULLET_DAMAGE * level,
                 bulletSound,
                 this.ENEMYL_RELOAD_INTERVAL,
                 this.ENEMY_HEIGHT,

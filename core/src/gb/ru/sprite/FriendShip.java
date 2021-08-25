@@ -21,7 +21,7 @@ import gb.ru.pool.ExplosionPool;
 
 public class FriendShip extends Ship {
 
-    private static final int HP = 1;
+    private static final int HP = 100;
 
     // измеряется в процентах от размера корабля
     private HashSet<Direction> directions = new HashSet<>();
