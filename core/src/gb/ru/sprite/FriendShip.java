@@ -136,7 +136,7 @@ public class FriendShip extends Ship {
         return (
                 bullet.getRight()>getLeft()
                         && bullet.getLeft()<getRight()
-                        && bullet.getTop()< getBottom()
+                        && bullet.getTop()> getBottom()
                         && bullet.getBottom()< pos.y
         );
     }

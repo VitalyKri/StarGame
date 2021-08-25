@@ -2,6 +2,7 @@ package gb.ru.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -9,12 +10,14 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 
 import java.util.List;
+import java.util.Random;
 
 import gb.ru.base.BaseScreen;
 import gb.ru.base.Font;
 import gb.ru.base.Playlist;
 import gb.ru.base.Sprite;
 import gb.ru.math.Rect;
+import gb.ru.math.Rnd;
 import gb.ru.pool.BulletPool;
 import gb.ru.pool.EnemyPool;
 import gb.ru.pool.ExplosionPool;
@@ -139,7 +142,11 @@ public class GameScreen extends BaseScreen {
         }
         explosionPool.updateActiveSprites(delta);
         playlist.update(delta);
-        enemyEmitter.generate(delta,frags);
+        boolean isNewLevel = enemyEmitter.generateUpdateLevel(delta,frags);
+        if (isNewLevel){
+            Music music = playlist.GetMP3Music("background"+String.valueOf(enemyEmitter.getLevel()%3+1));
+            playlist.setNewMusic(music);
+        }
     }
 
     public void freeAllDestroyed() {
